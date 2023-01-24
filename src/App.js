@@ -70,8 +70,36 @@ const App = () => {
       (prev, current) => prev + current.price * current.qnt,
       0
     );
-    return totalPrice;
+    if(activeCode === null) {
+      return totalPrice;
+    }
+    if(activeCode.type == 0) {
+      return totalPrice - ((totalPrice * activeCode.value) / 100)
+    }
+    else if(activeCode.type == 1) {
+      const total = totalPrice - activeCode.value;
+      return total < 0 ? 0 : total;
+    }
+
   };
+
+  const handleCodeInputChange = (event) => {
+    setCodeInput(event.target.value)
+  }
+
+  const handleAddCode = () => {
+    const code = vouchers.find((code ) => code.name == codeInput )
+    if(!code){
+      alert('codice non valido')
+      return;
+    }
+    setAtiveCode(code)
+    setCodeInput('')
+
+  }
+  const removeCode = () => {
+    setAtiveCode(null)
+  }
 
   return (
     <div>
@@ -98,17 +126,19 @@ const App = () => {
         <h2>Codici sconto</h2>
         <div>
           <input
+            value={codeInput}
+            onChange={handleCodeInputChange}
             name="code"
             type="text"
             placeholder="codice"
           />
-          <button>Applica</button>
+          <button onClick={handleAddCode}>Applica</button>
         </div>
         <div>
           <p>
-
-        </p> 
-            <button>Rimuovi codice</button>
+            {activeCode?.name}
+          </p> 
+            <button onClick={removeCode}>Rimuovi codice</button>
         </div>
       </div>
       <div>
